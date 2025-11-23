@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ClothingDetailViewModel @Inject constructor(
     private val getClothingItemUseCase: GetClothingItemUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(ClothingDetailState())
@@ -25,14 +25,40 @@ class ClothingDetailViewModel @Inject constructor(
         }
     }
 
+    fun onRatingChanged(rating: Int) {
+        _state.value = _state.value.copy(userRating = rating)
+    }
+
+    fun onCommentChanged(comment: String) {
+        _state.value = _state.value.copy(userComment = comment)
+    }
+
+    fun submitComment() {
+        val currentState = _state.value
+        if (currentState.userComment.isNotBlank()) {
+            val newComments = currentState.comments + currentState.userComment
+            _state.value = currentState.copy(
+                comments = newComments,
+                userComment = "", // Reset the input field
+                userRating = 0 // Reset the rating
+            )
+        }
+    }
+
     private fun getClothingItem(id: Int) {
         viewModelScope.launch {
             try {
-                _state.value = ClothingDetailState(isLoading = true)
+                _state.value = _state.value.copy(isLoading = true)
                 val clothingItem = getClothingItemUseCase(id)
-                _state.value = ClothingDetailState(clothingItem = clothingItem)
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    clothingItem = clothingItem
+                )
             } catch (e: Exception) {
-                _state.value = ClothingDetailState(error = e.localizedMessage ?: "An unexpected error occurred")
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    error = e.localizedMessage ?: "An unexpected error occurred"
+                )
             }
         }
     }

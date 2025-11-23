@@ -23,6 +23,6 @@ fun ClothingItemDto.toClothingItem(): ClothingItem {
         category = category,
         likes = likes,
         price = price,
-        original_price = originalPrice
+        originalPrice = originalPrice
     )
 }

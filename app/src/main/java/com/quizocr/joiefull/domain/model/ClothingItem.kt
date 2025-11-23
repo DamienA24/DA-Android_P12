@@ -7,5 +7,5 @@ data class ClothingItem(
     val category: String,
     val likes: Int,
     val price: Double,
-    val original_price: Double
+    val originalPrice: Double
 )

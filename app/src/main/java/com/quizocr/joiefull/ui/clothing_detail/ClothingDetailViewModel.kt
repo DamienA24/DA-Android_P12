@@ -6,9 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quizocr.joiefull.domain.use_case.GetClothingItemUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ClothingDetailViewModel(
+@HiltViewModel
+class ClothingDetailViewModel @Inject constructor(
     private val getClothingItemUseCase: GetClothingItemUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -17,8 +20,8 @@ class ClothingDetailViewModel(
     val state: State<ClothingDetailState> = _state
 
     init {
-        savedStateHandle.get<String>("clothingId")?.let {
-            getClothingItem(it.toInt())
+        savedStateHandle.get<Int>("clothingId")?.let {
+            getClothingItem(it)
         }
     }
 

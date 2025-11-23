@@ -1,17 +1,7 @@
 package com.quizocr.joiefull
 
 import android.app.Application
-import com.quizocr.joiefull.di.AppModule
-import com.quizocr.joiefull.di.AppModuleImpl
+import dagger.hilt.android.HiltAndroidApp
 
-class JoieFullApp : Application() {
-
-    companion object {
-        lateinit var appModule: AppModule
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        appModule = AppModuleImpl()
-    }
-}
+@HiltAndroidApp
+class JoieFullApp : Application()

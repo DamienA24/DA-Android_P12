@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.quizocr.joiefull.ui.components.LikesCounter
+import com.quizocr.joiefull.ui.components.PriceDisplay
+import com.quizocr.joiefull.ui.components.PriceStyle
 import com.quizocr.joiefull.ui.theme.JoieFullTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,45 +78,21 @@ fun ClothingDetailScreen(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
-                            Card(
+                            LikesCounter(
+                                likes = item.likes,
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)
-                                    .padding(8.dp),
-                                shape = RoundedCornerShape(16.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color.White)
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.FavoriteBorder,
-                                        contentDescription = "Likes",
-                                        modifier = Modifier.size(16.dp),
-                                        tint = Color.Black
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(text = item.likes.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Black)
-                                }
-                            }
+                                    .padding(8.dp)
+                            )
                         }
                         Text(text = item.name, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.headlineMedium)
                         
-                        // Price Section
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "${item.price}€", style = MaterialTheme.typography.titleLarge)
-                            Text(
-                                text = "${item.originalPrice}€",
-                                style = MaterialTheme.typography.titleLarge.copy(textDecoration = TextDecoration.LineThrough),
-                                color = Color.Gray
-                            )
-                        }
+                        PriceDisplay(
+                            price = item.price,
+                            originalPrice = item.originalPrice,
+                            style = PriceStyle.LARGE,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
 
                         Text(text = item.picture.description, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
 
@@ -170,6 +148,27 @@ fun ClothingDetailScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+
+@Preview(showBackground = true, name = "Comment Input Field")
+@Composable
+fun CommentInputPreview() {
+    JoieFullTheme {
+        Surface {
+            var text by remember { mutableStateOf("") }
+
+            OutlinedTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("Partagez ici vos impressions") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(24.dp)
+            )
         }
     }
 }

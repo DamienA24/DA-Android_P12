@@ -24,7 +24,7 @@ fun LikesCounter(likes: Int, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
@@ -34,10 +34,10 @@ fun LikesCounter(likes: Int, modifier: Modifier = Modifier) {
                 imageVector = Icons.Outlined.FavoriteBorder,
                 contentDescription = "Likes",
                 modifier = Modifier.size(16.dp),
-                tint = Color.Black
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = likes.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Black)
+            Text(text = likes.toString(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }

@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -42,133 +41,113 @@ fun ClothingDetailScreen(
     val state = viewModel.state.value
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* TODO: Implement share functionality */ }) {
-                        Icon(Icons.Default.Share, contentDescription = "Share")
-                    }
-                }
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            state.error?.let {
-                Text(text = it, modifier = Modifier.align(Alignment.Center))
-            }
-            state.clothingItem?.let { item ->
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    item {
-                        Box(modifier = Modifier
+        state.error?.let {
+            Text(text = it, modifier = Modifier.align(Alignment.Center))
+        }
+        state.clothingItem?.let { item ->
+            LazyColumn(modifier = Modifier.fillMaxSize().padding(6.dp)) {
+                item {
+                    Box(
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f)) {
-                            AsyncImage(
-                                model = item.picture.url,
-                                contentDescription = item.picture.description,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            LikesCounter(
-                                likes = item.likes,
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(8.dp)
-                            )
-                        }
-                        Text(text = item.name, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.headlineMedium)
-                        
-                        PriceDisplay(
-                            price = item.price,
-                            originalPrice = item.originalPrice,
-                            style = PriceStyle.LARGE,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(16.dp))
+                    ) {
+                        AsyncImage(
+                            model = item.picture.url,
+                            contentDescription = item.picture.description,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
                         )
-
-                        Text(text = item.picture.description, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
-
-
-                        // Rating Section
                         Row(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            // Avatar
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.Gray)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            // Stars
-                            (1..5).forEach { star ->
-                                IconButton(onClick = { viewModel.onRatingChanged(star) }) {
-                                    Icon(
-                                        imageVector = if (star <= state.userRating) Icons.Filled.Star else Icons.Outlined.StarOutline,
-                                        contentDescription = "Rating $star",
-                                        tint = if (star <= state.userRating) Color.Yellow else Color.Gray
-                                    )
-                                }
-                            }
-                        }
-
-                        // Comment Input
-                        OutlinedTextField(
-                            value = state.userComment,
-                            onValueChange = { viewModel.onCommentChanged(it) },
-                            label = { Text("Partagez ici vos impressions") },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            shape = RoundedCornerShape(24.dp),
-                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                            keyboardActions = KeyboardActions(onDone = {
-                                viewModel.submitComment()
-                                keyboardController?.hide()
-                            })
+                                .statusBarsPadding()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
+                            }
+                            IconButton(onClick = { /* TODO: Implement share functionality */ }) {
+                                Icon(Icons.Default.Share, contentDescription = "Share", tint = Color.Black)
+                            }
+                        }
+                        LikesCounter(
+                            likes = item.likes,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(8.dp)
                         )
                     }
+                    Text(text = item.name, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.headlineMedium)
+                    
+                    PriceDisplay(
+                        price = item.price,
+                        originalPrice = item.originalPrice,
+                        style = PriceStyle.LARGE,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
 
-                    // Submitted Comments
-                    items(state.comments) { comment ->
-                        Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
-                            Text(text = comment, modifier = Modifier.padding(16.dp))
+                    Text(text = item.picture.description, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
+
+
+                    // Rating Section
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Avatar
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.tertiary)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Stars
+                        (1..5).forEach { star ->
+                            IconButton(onClick = { viewModel.onRatingChanged(star) }) {
+                                Icon(
+                                    imageVector = if (star <= state.userRating) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                                    contentDescription = "Rating $star",
+                                    tint = if (star <= state.userRating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                                )
+                            }
                         }
+                    }
+
+                    // Comment Input
+                    OutlinedTextField(
+                        value = state.userComment,
+                        onValueChange = { viewModel.onCommentChanged(it) },
+                        label = { Text("Partagez ici vos impressions") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            viewModel.submitComment()
+                            keyboardController?.hide()
+                        })
+                    )
+                }
+
+                // Submitted Comments
+                items(state.comments) { comment ->
+                    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                        Text(text = comment, modifier = Modifier.padding(16.dp))
                     }
                 }
             }
-        }
-    }
-}
-
-
-@Preview(showBackground = true, name = "Comment Input Field")
-@Composable
-fun CommentInputPreview() {
-    JoieFullTheme {
-        Surface {
-            var text by remember { mutableStateOf("") }
-
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("Partagez ici vos impressions") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(24.dp)
-            )
         }
     }
 }

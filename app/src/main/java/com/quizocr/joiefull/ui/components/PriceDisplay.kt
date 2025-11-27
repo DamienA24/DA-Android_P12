@@ -43,7 +43,7 @@ fun PriceDisplay(
         Text(
             text = "${originalPrice}€",
             style = originalPriceTextStyle.copy(textDecoration = TextDecoration.LineThrough),
-            color = Color.Gray
+            color = MaterialTheme.colorScheme.tertiary
         )
     }
 }

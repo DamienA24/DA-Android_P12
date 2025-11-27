@@ -8,5 +8,7 @@ data class ClothingDetailState(
     val error: String? = null,
     val userRating: Int = 0,
     val userComment: String = "",
-    val comments: List<String> = emptyList()
+    val comments: List<String> = emptyList(),
+    val showShareDialog: Boolean = false,
+    val shareMessage: String = ""
 )

@@ -1,5 +1,6 @@
 package com.quizocr.joiefull.ui.clothing_detail
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
@@ -31,6 +34,7 @@ import com.quizocr.joiefull.ui.components.LikesCounter
 import com.quizocr.joiefull.ui.components.PriceDisplay
 import com.quizocr.joiefull.ui.components.PriceStyle
 import com.quizocr.joiefull.ui.theme.JoieFullTheme
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +44,48 @@ fun ClothingDetailScreen(
 ) {
     val state = viewModel.state.value
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is ClothingDetailViewModel.UiEvent.Share -> {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "${event.message} - Regarde cet article : ${event.clothingItem.name} - https://joiefull.com/clothing/${event.clothingItem.id}")
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    context.startActivity(shareIntent)
+                }
+            }
+        }
+    }
+
+    if (state.showShareDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.onShareDialogDismissed() },
+            title = { Text("Partager cet article") },
+            text = {
+                OutlinedTextField(
+                    value = state.shareMessage,
+                    onValueChange = { viewModel.onShareMessageChanged(it) },
+                    label = { Text("Ajouter un message") }
+                )
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.onConfirmShareClicked() }) {
+                    Text("Partager")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.onShareDialogDismissed() }) {
+                    Text("Annuler")
+                }
+            }
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.isLoading) {
@@ -49,13 +95,12 @@ fun ClothingDetailScreen(
             Text(text = it, modifier = Modifier.align(Alignment.Center))
         }
         state.clothingItem?.let { item ->
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(6.dp)) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1f)
-                            .clip(RoundedCornerShape(16.dp))
                     ) {
                         AsyncImage(
                             model = item.picture.url,
@@ -63,6 +108,7 @@ fun ClothingDetailScreen(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxSize()
+                                .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
                         )
                         Row(
                             modifier = Modifier
@@ -75,7 +121,7 @@ fun ClothingDetailScreen(
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.Black)
                             }
-                            IconButton(onClick = { /* TODO: Implement share functionality */ }) {
+                            IconButton(onClick = { viewModel.onShareClicked() }) {
                                 Icon(Icons.Default.Share, contentDescription = "Share", tint = Color.Black)
                             }
                         }
@@ -98,7 +144,6 @@ fun ClothingDetailScreen(
                     Text(text = item.picture.description, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
 
 
-                    // Rating Section
                     Row(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -112,7 +157,6 @@ fun ClothingDetailScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
 
-                        // Stars
                         (1..5).forEach { star ->
                             IconButton(onClick = { viewModel.onRatingChanged(star) }) {
                                 Icon(
@@ -124,7 +168,6 @@ fun ClothingDetailScreen(
                         }
                     }
 
-                    // Comment Input
                     OutlinedTextField(
                         value = state.userComment,
                         onValueChange = { viewModel.onCommentChanged(it) },
@@ -137,6 +180,7 @@ fun ClothingDetailScreen(
                         keyboardActions = KeyboardActions(onDone = {
                             viewModel.submitComment()
                             keyboardController?.hide()
+                            focusManager.clearFocus()
                         })
                     )
                 }

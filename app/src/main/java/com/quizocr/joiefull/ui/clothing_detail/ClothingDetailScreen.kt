@@ -72,7 +72,7 @@ fun ClothingDetailScreen(
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().padding(6.dp)) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
@@ -85,7 +85,8 @@ fun ClothingDetailScreen(
                     ItemImageHeader(
                         item = item,
                         onBackClicked = { navController.popBackStack() },
-                        onShareClicked = { viewModel.onShareClicked() }
+                        onShareClicked = { viewModel.onShareClicked() },
+                        onFavoriteClicked = { viewModel.onFavoriteClicked() }
                     )
                     Text(text = item.name, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.headlineMedium)
                     

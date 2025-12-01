@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -53,8 +52,7 @@ fun ClothingListScreen(
                         text = category,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -69,6 +67,7 @@ fun ClothingListScreen(
                         rowItems.forEach { item ->
                             ClothingListItem(
                                 item = item,
+                                onFavoriteClicked = { viewModel.onFavoriteClicked(item.id) },
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxHeight() // Fills the height of the row

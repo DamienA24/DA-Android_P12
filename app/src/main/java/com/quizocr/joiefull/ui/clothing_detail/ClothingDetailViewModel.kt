@@ -6,7 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quizocr.joiefull.domain.model.ClothingItem
-import com.quizocr.joiefull.domain.repository.ClothingRepository
+import com.quizocr.joiefull.domain.use_case.GetClothingItemUseCase
+import com.quizocr.joiefull.domain.use_case.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClothingDetailViewModel @Inject constructor(
-    private val repository: ClothingRepository,
+    private val getClothingItemUseCase: GetClothingItemUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -35,7 +37,7 @@ class ClothingDetailViewModel @Inject constructor(
 
     fun onFavoriteClicked() {
         viewModelScope.launch {
-            _state.value.clothingItem?.let { repository.toggleFavorite(it.id) }
+            _state.value.clothingItem?.let { toggleFavoriteUseCase(it.id) }
         }
     }
 
@@ -81,7 +83,7 @@ class ClothingDetailViewModel @Inject constructor(
     }
 
     private fun getClothingItem(id: Int) {
-        repository.getClothingItem(id).onEach { item ->
+        getClothingItemUseCase(id).onEach { item ->
             _state.value = _state.value.copy(clothingItem = item)
         }.launchIn(viewModelScope)
     }

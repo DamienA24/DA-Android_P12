@@ -4,7 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.quizocr.joiefull.domain.repository.ClothingRepository
+import com.quizocr.joiefull.domain.use_case.GetClothingItemsUseCase
+import com.quizocr.joiefull.domain.use_case.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClothingListViewModel @Inject constructor(
-    private val repository: ClothingRepository
+    private val getClothingItemsUseCase: GetClothingItemsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(ClothingListState())
@@ -25,7 +27,7 @@ class ClothingListViewModel @Inject constructor(
 
     fun onFavoriteClicked(itemId: Int) {
         viewModelScope.launch {
-            repository.toggleFavorite(itemId)
+            toggleFavoriteUseCase(itemId)
         }
     }
 
@@ -33,7 +35,7 @@ class ClothingListViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _state.value = ClothingListState(isLoading = true)
-                repository.getClothingItems().onEach { items ->
+                getClothingItemsUseCase().onEach { items ->
                     _state.value = ClothingListState(clothingItems = items)
                 }.launchIn(viewModelScope)
             } catch (e: Exception) {

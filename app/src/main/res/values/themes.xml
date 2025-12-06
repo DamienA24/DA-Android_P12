@@ -2,4 +2,15 @@
 <resources>
 
     <style name="Theme.JoieFull" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/orange</item> 
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/joie_full_icone</item>
+
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.JoieFull</item>
+    </style>
 </resources>

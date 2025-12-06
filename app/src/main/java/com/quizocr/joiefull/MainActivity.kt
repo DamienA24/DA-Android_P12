@@ -18,12 +18,15 @@ import com.quizocr.joiefull.ui.clothing_detail.ClothingDetailScreen
 import com.quizocr.joiefull.ui.clothing_list.ClothingListScreen
 import com.quizocr.joiefull.ui.theme.JoieFullTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
+
         setContent {
             JoieFullTheme {
                 Surface(

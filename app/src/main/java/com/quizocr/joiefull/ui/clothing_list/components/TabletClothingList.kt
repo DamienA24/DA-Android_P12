@@ -13,7 +13,7 @@ import com.quizocr.joiefull.ui.clothing_detail.ClothingDetailContent
 import com.quizocr.joiefull.ui.clothing_list.ClothingListState
 
 @Composable
-fun MasterDetailLayout(
+fun TabletClothingList(
     listState: ClothingListState,
     columns: Int,
     selectedItemId: Int?,

@@ -88,6 +88,10 @@ class ClothingDetailViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun loadClothingItem(id: Int) {
+        getClothingItem(id)
+    }
+
     sealed class UiEvent {
         data class Share(val clothingItem: ClothingItem, val message: String) : UiEvent()
     }

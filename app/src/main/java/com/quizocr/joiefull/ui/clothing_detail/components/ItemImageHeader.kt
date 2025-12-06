@@ -24,12 +24,22 @@ fun ItemImageHeader(
     onBackClicked: () -> Unit,
     onShareClicked: () -> Unit,
     onFavoriteClicked: () -> Unit,
+    showBackButton: Boolean = true,
+    maxHeight: androidx.compose.ui.unit.Dp? = null,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
+    val imageModifier = if (maxHeight != null) {
+        modifier
+            .fillMaxWidth()
+            .height(maxHeight)
+    } else {
+        modifier
             .fillMaxWidth()
             .aspectRatio(1f)
+    }
+
+    Box(
+        modifier = imageModifier
     ) {
         AsyncImage(
             model = item.picture.url,
@@ -47,8 +57,12 @@ fun ItemImageHeader(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClicked) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+            if (showBackButton) {
+                IconButton(onClick = onBackClicked) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                }
+            } else {
+                Spacer(modifier = Modifier.width(48.dp))
             }
             IconButton(onClick = onShareClicked) {
                 Icon(Icons.Default.Share, contentDescription = "Share", tint = Color.White)

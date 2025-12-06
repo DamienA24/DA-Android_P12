@@ -1,4 +1,4 @@
-package com.quizocr.joiefull.ui.clothing_list
+package com.quizocr.joiefull.ui.clothing_list.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,37 +17,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.quizocr.joiefull.ui.clothing_list.components.ClothingListItem
+import com.quizocr.joiefull.ui.clothing_list.ClothingListState
 
+/**
+ * Reusable grid component for displaying clothing items
+ * Used in both phone and tablet layouts with configurable column count
+ */
 @Composable
-fun ClothingListScreen(
-    navController: NavController,
-    windowSizeClass: WindowSizeClass? = null,
-    viewModel: ClothingListViewModel = hiltViewModel()
+fun ClothingGrid(
+    state: ClothingListState,
+    columns: Int,
+    onItemClick: (Int) -> Unit,
+    onFavoriteClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // Use adaptive screen for expanded mode (tablets)
-    if (windowSizeClass?.widthSizeClass == WindowWidthSizeClass.Expanded) {
-        ClothingListAdaptiveScreen(
-            navController = navController,
-            windowSizeClass = windowSizeClass,
-            viewModel = viewModel
-        )
-        return
-    }
-
-    // Phone mode: Keep existing implementation
-    val state = viewModel.state.value
     val groupedItems = state.clothingItems.groupBy { it.category }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
@@ -70,10 +60,10 @@ fun ClothingListScreen(
                     )
                 }
 
-                items(items.chunked(2)) { rowItems ->
+                items(items.chunked(columns)) { rowItems ->
                     Row(
                         modifier = Modifier
-                            .height(IntrinsicSize.Min) // Ensures items in a row have the same height
+                            .height(IntrinsicSize.Min)
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -81,15 +71,16 @@ fun ClothingListScreen(
                         rowItems.forEach { item ->
                             ClothingListItem(
                                 item = item,
-                                onFavoriteClicked = { viewModel.onFavoriteClicked(item.id) },
+                                onFavoriteClicked = { onFavoriteClick(item.id) },
                                 modifier = Modifier
                                     .weight(1f)
-                                    .fillMaxHeight() // Fills the height of the row
-                                    .clickable { navController.navigate("clothing_detail/${item.id}") }
+                                    .fillMaxHeight()
+                                    .clickable { onItemClick(item.id) }
                             )
                         }
 
-                        if (rowItems.size < 2) {
+                        // Fill remaining columns with spacers
+                        repeat(columns - rowItems.size) {
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }

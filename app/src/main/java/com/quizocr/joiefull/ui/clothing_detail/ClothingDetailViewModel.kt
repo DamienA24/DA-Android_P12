@@ -76,8 +76,8 @@ class ClothingDetailViewModel @Inject constructor(
             val newComments = currentState.comments + currentState.userComment
             _state.value = currentState.copy(
                 comments = newComments,
-                userComment = "", // Reset the input field
-                userRating = 0 // Reset the rating
+                userComment = "",
+                userRating = 0
             )
         }
     }

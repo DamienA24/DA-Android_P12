@@ -17,9 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-/**
- * Placeholder displayed when no item is selected in the detail pane
- */
 @Composable
 fun EmptyDetailPlaceholder(
     modifier: Modifier = Modifier

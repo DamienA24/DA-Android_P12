@@ -25,7 +25,6 @@ fun RatingSection(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Avatar
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -34,7 +33,6 @@ fun RatingSection(
         )
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Stars
         (1..5).forEach { star ->
             IconButton(onClick = { onRatingChanged(star) }) {
                 Icon(

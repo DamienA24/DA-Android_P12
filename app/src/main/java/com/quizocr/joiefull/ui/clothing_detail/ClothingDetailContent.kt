@@ -2,17 +2,23 @@ package com.quizocr.joiefull.ui.clothing_detail
 
 import android.content.Intent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.quizocr.joiefull.ui.components.PriceDisplay
@@ -82,7 +88,9 @@ fun ClothingDetailContent(
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(6.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(6.dp)) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
@@ -90,47 +98,116 @@ fun ClothingDetailContent(
             Text(text = it, modifier = Modifier.align(Alignment.Center))
         }
         state.clothingItem?.let { item ->
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
+            if (showBackButton) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        ItemImageHeader(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp),
+                            item = item,
+                            onBackClicked = { onBackClick?.invoke() },
+                            onShareClicked = { viewModel.onShareClicked() },
+                            onFavoriteClicked = { viewModel.onFavoriteClicked() },
+                            showBackButton = true,
+                        )
+                        StaticDetailContent(state, viewModel)
+
+                        CommentInputSection(
+                            comment = state.userComment,
+                            onCommentChanged = { viewModel.onCommentChanged(it) },
+                            onSubmit = { viewModel.submitComment() }
+                        )
+                    }
+
+                    if (state.comments.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Commentaires",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)
+                            )
+                        }
+                    }
+                    items(state.comments) { comment ->
+                        CommentCard(comment)
+                    }
+                }
+            } else {
+                // Mode tablette
+                Column(modifier = Modifier.fillMaxSize()) {
                     ItemImageHeader(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.60f),
                         item = item,
-                        onBackClicked = { onBackClick?.invoke() },
+                        onBackClicked = {},
                         onShareClicked = { viewModel.onShareClicked() },
                         onFavoriteClicked = { viewModel.onFavoriteClicked() },
-                        showBackButton = showBackButton,
-                        maxHeight = if (!showBackButton) 400.dp else null
-                    )
-                    Text(text = item.name, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.headlineMedium)
-
-                    PriceDisplay(
-                        price = item.price,
-                        originalPrice = item.originalPrice,
-                        style = PriceStyle.LARGE,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        showBackButton = false
                     )
 
-                    Text(text = item.picture.description, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.bodyMedium)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.4f)
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 8.dp)
+                    ) {
+                        StaticDetailContent(state, viewModel)
 
-                    RatingSection(
-                        rating = state.userRating,
-                        onRatingChanged = { viewModel.onRatingChanged(it) },
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
-
-                    CommentInputSection(
-                        comment = state.userComment,
-                        onCommentChanged = { viewModel.onCommentChanged(it) },
-                        onSubmit = { viewModel.submitComment() }
-                    )
-                }
-
-                // Submitted Comments
-                items(state.comments) { comment ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
-                        Text(text = comment, modifier = Modifier.padding(16.dp))
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        CommentInputSection(
+                            comment = state.userComment,
+                            onCommentChanged = { viewModel.onCommentChanged(it) },
+                            onSubmit = { viewModel.submitComment() }
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun StaticDetailContent(
+    state: ClothingDetailState,
+    viewModel: ClothingDetailViewModel
+) {
+    state.clothingItem?.let { item ->
+        Text(
+            text = item.name,
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 4.dp),
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        PriceDisplay(
+            price = item.price,
+            originalPrice = item.originalPrice,
+            style = PriceStyle.LARGE,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+
+        Text(
+            text = item.picture.description,
+            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 8.dp),
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        RatingSection(
+            rating = state.userRating,
+            onRatingChanged = { viewModel.onRatingChanged(it) },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun CommentCard(comment: String) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 4.dp)) {
+        Text(text = comment, modifier = Modifier.padding(16.dp))
     }
 }

@@ -19,27 +19,10 @@ import com.quizocr.joiefull.domain.model.ClothingItem
 import com.quizocr.joiefull.ui.components.FavoriteCounter
 
 @Composable
-fun ItemImageHeader(
-    item: ClothingItem,
-    onBackClicked: () -> Unit,
-    onShareClicked: () -> Unit,
-    onFavoriteClicked: () -> Unit,
-    showBackButton: Boolean = true,
-    maxHeight: androidx.compose.ui.unit.Dp? = null,
-    modifier: Modifier = Modifier
-) {
-    val imageModifier = if (maxHeight != null) {
-        modifier
-            .fillMaxWidth()
-            .height(maxHeight)
-    } else {
-        modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-    }
-
+fun ItemImageHeader(item: ClothingItem, onBackClicked: () -> Unit, onShareClicked: () -> Unit, onFavoriteClicked: () -> Unit, showBackButton: Boolean = true, modifier: Modifier = Modifier) {
     Box(
-        modifier = imageModifier
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
         AsyncImage(
             model = item.picture.url,

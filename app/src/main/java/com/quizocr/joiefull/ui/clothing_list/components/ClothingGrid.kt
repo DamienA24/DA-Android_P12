@@ -79,7 +79,6 @@ fun ClothingGrid(
                             )
                         }
 
-                        // Fill remaining columns with spacers
                         repeat(columns - rowItems.size) {
                             Spacer(modifier = Modifier.weight(1f))
                         }

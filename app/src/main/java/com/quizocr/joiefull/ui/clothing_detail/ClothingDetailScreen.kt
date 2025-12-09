@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,23 +57,36 @@ fun ClothingDetailScreen(
                 OutlinedTextField(
                     value = state.shareMessage,
                     onValueChange = { viewModel.onShareMessageChanged(it) },
-                    label = { Text("Ajouter un message") }
+                    label = { Text("Ajouter un message") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Black,
+                        unfocusedBorderColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                    )
                 )
             },
             confirmButton = {
-                Button(onClick = { viewModel.onConfirmShareClicked() }) {
+                Button(onClick = { viewModel.onConfirmShareClicked() },
+                    colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.Black
+                )) {
                     Text("Partager")
                 }
             },
             dismissButton = {
-                Button(onClick = { viewModel.onShareDialogDismissed() }) {
+                Button(onClick = { viewModel.onShareDialogDismissed() },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.Black
+                    )) {
                     Text("Annuler")
                 }
             }
         )
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(6.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(6.dp)) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
@@ -114,7 +128,9 @@ fun ClothingDetailScreen(
 
                 // Submitted Comments
                 items(state.comments) { comment ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)) {
                         Text(text = comment, modifier = Modifier.padding(16.dp))
                     }
                 }

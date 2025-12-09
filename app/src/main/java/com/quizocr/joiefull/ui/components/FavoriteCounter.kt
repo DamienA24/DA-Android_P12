@@ -27,8 +27,11 @@ fun FavoriteCounter(
     onFavoriteClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val favoriteAction = if (isFavorited) "Retirer des favoris" else "Ajouter aux favoris"
+    val contentDescription = "$favoriteAction, $likes j'aime"
+
     Card(
-        modifier = modifier.clickable { onFavoriteClicked() },
+        modifier = modifier.clickable(onClickLabel = favoriteAction) { onFavoriteClicked() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -38,7 +41,7 @@ fun FavoriteCounter(
         ) {
             Icon(
                 imageVector = if (isFavorited) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                contentDescription = "Favorites",
+                contentDescription = contentDescription,
                 modifier = Modifier.size(16.dp),
                 tint = if (isFavorited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )

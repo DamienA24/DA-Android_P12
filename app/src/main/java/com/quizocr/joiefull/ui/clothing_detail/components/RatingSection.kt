@@ -34,11 +34,16 @@ fun RatingSection(
         Spacer(modifier = Modifier.width(8.dp))
 
         (1..5).forEach { star ->
-            IconButton(onClick = { onRatingChanged(star) }) {
+            val isSelected = star <= rating
+            val starLabel = if (isSelected) "Noter $star étoile${if (star > 1) "s" else ""}, sélectionné" else "Noter $star étoile${if (star > 1) "s" else ""}"
+            IconButton(
+                onClick = { onRatingChanged(star) },
+                modifier = Modifier.size(48.dp)
+            ) {
                 Icon(
-                    imageVector = if (star <= rating) Icons.Filled.Star else Icons.Outlined.StarOutline,
-                    contentDescription = "Rating $star",
-                    tint = if (star <= rating) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                    imageVector = if (isSelected) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                    contentDescription = starLabel,
+                    tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
                 )
             }
         }

@@ -47,6 +47,7 @@ fun ClothingListItem(item: ClothingItem, onFavoriteClicked: () -> Unit, modifier
                 FavoriteCounter(
                     likes = item.likes,
                     isFavorited = item.isFavorited,
+                    name = item.name,
                     onFavoriteClicked = onFavoriteClicked,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

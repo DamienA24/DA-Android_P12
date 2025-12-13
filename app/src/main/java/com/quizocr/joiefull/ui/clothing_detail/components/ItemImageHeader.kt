@@ -58,6 +58,7 @@ fun ItemImageHeader(item: ClothingItem, onBackClicked: () -> Unit, onShareClicke
         FavoriteCounter(
             likes = item.likes,
             isFavorited = item.isFavorited,
+            name = item.name,
             onFavoriteClicked = onFavoriteClicked,
             modifier = Modifier
                 .align(Alignment.BottomEnd)

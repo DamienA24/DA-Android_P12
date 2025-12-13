@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.dp
 fun FavoriteCounter(
     likes: Int,
     isFavorited: Boolean,
+    name: String,
     onFavoriteClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val favoriteAction = if (isFavorited) "Retirer des favoris" else "Ajouter aux favoris"
+    val favoriteAction = if (isFavorited) "Retirer des favoris de $name" else "Ajouter aux favoris de $name"
     val contentDescription = "$favoriteAction, $likes j'aime"
 
     Card(

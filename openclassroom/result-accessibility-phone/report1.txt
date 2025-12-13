@@ -1,0 +1,17 @@
+Voici une liste d'opportunités pour améliorer l'accessibilité de JoieFull. Chaque élément correspond à une zone indiquée sur la capture d'écran fournie.
+
+Contraste du texte
+[389,867][504,915]
+Nous vous conseillons d'augmenter le rapport de contraste entre le premier plan et l'arrière-plan du texte de cet élément.
+Le rapport de contraste du texte de cet élément est de 3,95. Il est basé sur une couleur de premier plan estimée à #808080 et une couleur d'arrière-plan estimée à #FFFFFF. Nous vous conseillons d'utiliser des couleurs qui permettent d'obtenir un rapport de contraste supérieur à 4,50 pour les petites polices et à 3,00 pour les grandes polices.
+
+Contraste du texte
+[917,939][1032,987]
+Nous vous conseillons d'augmenter le rapport de contraste entre le premier plan et l'arrière-plan du texte de cet élément.
+Le rapport de contraste du texte de cet élément est de 3,95. Il est basé sur une couleur de premier plan estimée à #808080 et une couleur d'arrière-plan estimée à #FFFFFF. Nous vous conseillons d'utiliser des couleurs qui permettent d'obtenir un rapport de contraste supérieur à 4,50 pour les petites polices et à 3,00 pour les grandes polices.
+
+Contraste du texte
+[389,1704][504,1752]
+Nous vous conseillons d'augmenter le rapport de contraste entre le premier plan et l'arrière-plan du texte de cet élément.
+Le rapport de contraste du texte de cet élément est de 3,95. Il est basé sur une couleur de premier plan estimée à #808080 et une couleur d'arrière-plan estimée à #FFFFFF. Nous vous conseillons d'utiliser des couleurs qui permettent d'obtenir un rapport de contraste supérieur à 4,50 pour les petites polices et à 3,00 pour les grandes polices.
+
